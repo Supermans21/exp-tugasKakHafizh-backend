@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     if (error) {
       if (error.code === '23505') {
-        return res.status(200).json({ message: 'Item sudah ada di wishlist' });
+        return res.status(200).json({ message: 'Wishlist sudah ada di wishlist' });
       }
       throw error;
     }
