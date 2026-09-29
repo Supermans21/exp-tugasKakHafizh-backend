@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import 'dotenv/config';
+import getAllWishlist from "./api/get-all.js"
 import addToWishList from "./api/add-to-wishlist.js"
 import removeFromWishList from "./api/remove-from-wishlist.js"
 import getWishList from "./api/get-wishlist.js"
@@ -10,10 +11,10 @@ const port = 3000
 app.use(cors());
 app.use(express.json());
 
-
-app.get("/wishlist", getWishList);
+app.get("/wishlist", getAllWishlist);
+app.get("/wishlist/:user_id", getWishList);
 app.post("/wishlist/add", addToWishList);
-app.post("/wishlist/remove", removeFromWishList);
+app.delete("/wishlist/remove", removeFromWishList);
 
 app.listen(port, () => {
     console.log(`jalan di http://localhost:${port}`)

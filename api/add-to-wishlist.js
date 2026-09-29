@@ -11,27 +11,26 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { user_identifier, product_handle } = req.body;
+  const { user_id, wishlist, period, status, progress } = req.body;
 
-  if (!user_identifier || !product_handle) {
-    return res.status(400).json({ error: 'User identifier and product handle are required' });
+  if (!user_id || !wishlist || !period || status === undefined || progress === undefined) {
+    return res.status(400).json({ error: 'Input tidak lengkap' });
   }
 
   try {
     const { data, error } = await supabase
       .from('wishlist_items')
-      .insert({ user_identifier, product_handle });
+      .insert({ user_id, wishlist, period, status, progress });
 
     if (error) {
-      // Handle jika item sudah ada (unique constraint violation)
       if (error.code === '23505') {
-        return res.status(200).json({ message: 'Item already in wishlist' });
+        return res.status(200).json({ message: 'Item sudah ada di wishlist' });
       }
       throw error;
     }
 
-    res.status(201).json({ message: 'Successfully added to wishlist' });
+    res.status(201).json({ message: 'Berhasil ditambahkan ke wishlist' });
   } catch (error) {
-    res.status(500).json({ error: 'Error adding to wishlist', details: error.message });
+    res.status(500).json({ error: 'Gagal menambahkan ke wishlist', details: error.message });
   }
 }

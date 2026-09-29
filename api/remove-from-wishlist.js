@@ -7,29 +7,32 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') { // Menggunakan POST untuk kemudahan
+  if (req.method !== 'DELETE') { // Menggunakan POST untuk kemudahan
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { user_identifier, product_handle } = req.body;
+  const { user_id, wishlist, period, status, progress } = req.body;
 
-  if (!user_identifier || !product_handle) {
-    return res.status(400).json({ error: 'User identifier and product handle are required' });
+  if (!user_id || !wishlist || !period || status === undefined || progress === undefined) {
+    return res.status(400).json({ error: 'Input tidak lengkap' });
   }
 
   try {
     const { error } = await supabase
       .from('wishlist_items')
       .delete()
-      .eq('user_identifier', user_identifier)
-      .eq('product_handle', product_handle);
+      .eq('user_id', user_id)
+      .eq('wishlist', wishlist)
+      .eq('period', period)
+      .eq('status', status)
+      .eq('progress', progress);
 
     if (error) {
       throw error;
     }
 
-    res.status(200).json({ message: 'Successfully removed from wishlist' });
+    res.status(200).json({ message: 'Berhasil dihapus dari wishlist' });
   } catch (error) {
-    res.status(500).json({ error: 'Error removing from wishlist', details: error.message });
+    res.status(500).json({ error: 'Gagal menghapus dari wishlist', details: error.message });
   }
 }

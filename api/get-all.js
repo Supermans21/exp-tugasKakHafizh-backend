@@ -12,24 +12,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { user_id } = req.params;
-
-  if (!user_id) {
-    return res.status(400).json({ error: 'Input tidak lengkap' });
-  }
-
   try {
     const { data, error } = await supabase
       .from('wishlist_items')
       .select('*')
-      .eq('user_id', user_id);
-
+      
     if (error) {
       throw error;
     }
 
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil wishlist', details: error.message });
+    res.status(500).json({ error: 'Error fetching wishlist', details: error.message });
   }
 }
